@@ -13,4 +13,7 @@ public:
     Vec3f center;
     float radius, r2;
     Material mat;
+
+private:
+    const float EPSILON = 0.001f;
 };

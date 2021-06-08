@@ -15,13 +15,15 @@ Vec3<T>::Vec3(const Vec3<T> &other)
     : Vec3(other.x, other.y, other.z) {}
 
 template <typename T>
-Vec3<T> Vec3<T>::operator+(const Vec3<T> &other) const { return Vec3(x + other.x, y + other.y, z + other.z); }
+Vec3<T> Vec3<T>::operator+(const Vec3<T> &rhs) const { return Vec3(x + rhs.x, y + rhs.y, z + rhs.z); }
 template <typename T>
-Vec3<T> Vec3<T>::operator-(const Vec3<T> &other) const { return Vec3(x - other.x, y - other.y, z - other.z); }
+Vec3<T> Vec3<T>::operator-(const Vec3<T> &rhs) const { return Vec3(x - rhs.x, y - rhs.y, z - rhs.z); }
 template <typename T>
-Vec3<T> Vec3<T>::operator*(T other) const { return Vec3(x * other, y * other, z * other); }
+Vec3<T> Vec3<T>::operator*(const Vec3<T> &rhs) const { return Vec3f( x * rhs.x, y * rhs.y, z * rhs.z); }
 template <typename T>
-Vec3<T> Vec3<T>::operator/(T other) const { return Vec3(x / other, y / other, z / other); }
+Vec3<T> Vec3<T>::operator*(T rhs) const { return Vec3(x * rhs, y * rhs, z * rhs); }
+template <typename T>
+Vec3<T> Vec3<T>::operator/(T rhs) const { return Vec3(x / rhs, y / rhs, z / rhs); }
 
 template <typename T>
 T Vec3<T>::operator[](int index) const

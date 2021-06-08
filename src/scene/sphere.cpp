@@ -9,7 +9,7 @@ Sphere::Sphere(const Vec3f &center, float radius, const Material &mat)
 
 Intersection Sphere::getIntersection(const Ray &ray) const
 {
-    Vec3f l = ray.origin - center;
+    Vec3f l = center - ray.origin;
     float tca = l.dot(ray.delta);
     float d2 = l.dot(l) - tca * tca;
     if (d2 > r2) return Intersection();
@@ -22,14 +22,8 @@ Intersection Sphere::getIntersection(const Ray &ray) const
     // if entrance is farther than exit
     if (t0 > t1) t0 = t1;
 
-    // if entrance is behind camera
-    if (t0 < 0)
-    {
-        // both entrance and exit are behind camera
-        if (t1 < 0) return Intersection();
-        std::cout << "got here\n";
-        t0 = t1;
-    }
+    // prevents self intersection
+    if (t0 < EPSILON) return Intersection();
 
     Vec3f hit = ray.getPos(t0);
     return Intersection(true, hit, (hit - center).normalize());

@@ -5,7 +5,7 @@
 struct Ray
 {
     Ray(const Vec3f &origin, const Vec3f &delta)
-        : origin(origin), delta(delta) {}
+        : origin(origin), delta(delta.normalize()) {}
 
     Vec3f getPos(float deltaMult) const { return origin + delta * deltaMult; }
 

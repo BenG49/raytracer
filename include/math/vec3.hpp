@@ -10,10 +10,11 @@ public:
     Vec3(T xyz);
     Vec3(const Vec3<T> &other);
 
-    Vec3<T> operator+(const Vec3<T> &other) const;
-    Vec3<T> operator-(const Vec3<T> &other) const;
-    Vec3<T> operator*(T other) const;
-    Vec3<T> operator/(T other) const;
+    Vec3<T> operator+(const Vec3<T> &rhs) const;
+    Vec3<T> operator-(const Vec3<T> &rhs) const;
+    Vec3<T> operator*(const Vec3<T> &rhs) const;
+    Vec3<T> operator*(T rhs) const;
+    Vec3<T> operator/(T rhs) const;
     T operator[](int index) const;
 
     T dot(const Vec3<T> &other) const;
@@ -31,4 +32,4 @@ public:
 
 typedef Vec3<float> Vec3f;
 
-const Vec3f NULLVEC(0, 0, 0);
+const Vec3f ORIG(0, 0, 0);

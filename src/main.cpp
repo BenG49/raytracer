@@ -1,14 +1,18 @@
 #include "../include/scene/sphere.hpp"
+#include "../include/scene/light.hpp"
 
 #include <vector>
 #include <iostream>
 #include "SFML/Graphics.hpp"
 
+// CONSTANTS
+
 const int XRES = 640;
-const int YRES = 640;
+const int YRES = 480;
 
 const float XVIEWPLANE = 0.5f;
-const float YVIEWPLANE = 0.375f;
+// keep view plane in same ratio as resolution
+const float YVIEWPLANE = (YRES / (float) XRES) * XVIEWPLANE;
 const float RAYDX = XVIEWPLANE / XRES;
 const float RAYDY = YVIEWPLANE / YRES;
 
@@ -17,28 +21,20 @@ const float VIEWPLANE_YSTART = -YVIEWPLANE/2.0f;
 
 const Vec3f BACKGROUND(255, 255, 255);
 
-// TODO: fix rotation
+//
+//
+// 
 
 Vec3f cam(0);
 float pitch = 0;
 float yaw = 0;
 
 std::vector<std::unique_ptr<Shape>> shapes;
+Light light(Vec3f(0, 0, 5), Vec3f(1, 1, 1));
 
 //
 //
 //
-
-void initShapes()
-{
-    shapes.push_back(std::make_unique<Sphere>(
-        Sphere(
-            Vec3f(0, 0, 7),
-            2,
-            { Vec3f(255, 0, 0) }
-        )
-    ));
-}
 
 Ray getRay(int px, int py)
 {
@@ -77,6 +73,11 @@ Vec3f getColor(const Ray &ray)
     
     Shape *hit = shapes[index].get();
 
+    if (light.inShadow(*intr, cam, shapes))
+        return ORIG;
+    
+    float dist = intr->hit.dist(light.pos);
+
     return hit->getMat().color;
 }
 
@@ -100,9 +101,20 @@ void drawFrame(sf::Uint8 *pixels)
     }
 }
 
-/*int main()
+void initShapes()
 {
-    sf::RenderWindow win(sf::VideoMode(XRES, YRES), ".");
+    shapes.push_back(std::make_unique<Sphere>(
+        Sphere(
+            Vec3f(0, 0, 7),
+            1,
+            { Vec3f(255, 0, 0) }
+        )
+    ));
+}
+
+int main()
+{
+    sf::RenderWindow win(sf::VideoMode(XRES, YRES), "");
 
     sf::Event e;
 
@@ -130,12 +142,4 @@ void drawFrame(sf::Uint8 *pixels)
     }
 
     return 0;
-}*/
-
-int main()
-{
-    initShapes();
-
-    Ray r = getRay(XRES/2, YRES/2);
-    getColor(r).print();
 }

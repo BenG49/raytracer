@@ -7,8 +7,8 @@ struct Intersection
     // creates missed intersection
     Intersection()
         : intersected(false)
-        , hit(NULLVEC)
-        , norm(NULLVEC) {}
+        , hit(ORIG)
+        , norm(ORIG) {}
     
     Intersection(bool intersected, const Vec3f &hit, const Vec3f &norm)
         : intersected(intersected)
