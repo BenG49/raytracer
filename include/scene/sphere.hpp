@@ -1,18 +1,16 @@
 #pragma once
 
 #include "shape.hpp"
-#include "../math/vec3.hpp"
 
 class Sphere : public Shape
 {
 public:
-    Sphere(const Vec3f &center, float radius, const Material& m);
+    Sphere(const Vec3f &center, float radius, const Material &mat);
 
     Intersection getIntersection(const Ray &ray) const override;
     Material getMat() const override;
 
-private:
     Vec3f center;
-    Material m;
     float radius, r2;
+    Material mat;
 };

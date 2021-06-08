@@ -3,7 +3,6 @@
 #include "../math/ray.hpp"
 #include "intersection.hpp"
 #include "material.hpp"
-#include "SFML/Graphics/Color.hpp"
 
 class Shape
 {

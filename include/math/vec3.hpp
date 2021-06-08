@@ -31,4 +31,4 @@ public:
 
 typedef Vec3<float> Vec3f;
 
-const Vec3f NULLVEC(INFINITY, INFINITY, INFINITY);
+const Vec3f NULLVEC(0, 0, 0);

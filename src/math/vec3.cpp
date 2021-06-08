@@ -1,4 +1,4 @@
-#include "../../math/vec3.hpp"
+#include "../../include/math/vec3.hpp"
 
 #include <iostream>
 
@@ -69,21 +69,22 @@ Vec3<T> Vec3<T>::cross(const Vec3<T> &other) const
 template<typename T>
 Vec3<T> Vec3<T>::rotate(float pitch, float yaw) const
 {
-    // rotation around the y axis
-    T pSin = sin(pitch);
-    T pCos = cos(pitch);
-    Vec3<T> out(
-        x * pCos + z * pCos,
-        y,
-        -x * pSin + z * pCos
-    );
-
+    // rotation around y axis
     T ySin = sin(yaw);
     T yCos = cos(yaw);
+    Vec3<T> out(
+        x * yCos + z * ySin,
+        y,
+        -x * ySin + z * yCos
+    );
+
+    // rotation around x axis
+    T pSin = sin(pitch);
+    T pCos = cos(pitch);
     return Vec3<T>(
-        out.x * yCos - out.y * ySin,
-        out.x * ySin + out.y * yCos,
-        out.z
+        out.x,
+        y * pCos - z * pSin,
+        y * pSin + z * pCos
     );
 }
 
@@ -102,3 +103,4 @@ void Vec3<T>::print() const
 {
     std::cout << '(' << x << ", " << y << ", " << z << ')' << std::endl;
 }
+
