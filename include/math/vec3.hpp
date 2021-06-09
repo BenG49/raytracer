@@ -15,6 +15,10 @@ public:
     Vec3<T> operator*(const Vec3<T> &rhs) const;
     Vec3<T> operator*(T rhs) const;
     Vec3<T> operator/(T rhs) const;
+
+    Vec3<T> operator+=(const Vec3<T> &rhs);
+    Vec3<T> operator-=(const Vec3<T> &rhs);
+
     T operator[](int index) const;
 
     T dot(const Vec3<T> &other) const;

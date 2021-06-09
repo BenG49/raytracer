@@ -26,6 +26,21 @@ template <typename T>
 Vec3<T> Vec3<T>::operator/(T rhs) const { return Vec3(x / rhs, y / rhs, z / rhs); }
 
 template <typename T>
+Vec3<T> Vec3<T>::operator+=(const Vec3<T> &rhs) {
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
+    return *this;
+};
+template <typename T>
+Vec3<T> Vec3<T>::operator-=(const Vec3<T> &rhs) {
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
+    return *this;
+};
+
+template <typename T>
 T Vec3<T>::operator[](int index) const
 {
     switch (index) {
@@ -85,8 +100,8 @@ Vec3<T> Vec3<T>::rotate(float pitch, float yaw) const
     T pCos = cos(pitch);
     return Vec3<T>(
         out.x,
-        y * pCos - z * pSin,
-        y * pSin + z * pCos
+        out.y * pCos - out.z * pSin,
+        out.y * pSin + out.z * pCos
     );
 }
 

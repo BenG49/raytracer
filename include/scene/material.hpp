@@ -5,4 +5,5 @@
 struct Material
 {
     Vec3f color;
+    bool reflective;
 };

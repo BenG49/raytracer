@@ -10,7 +10,7 @@
 //
 //
 
-Vec3f cam(0);
+Vec3f cam(0, 0, 0);
 float pitch = 0;
 float yaw = 0;
 
@@ -54,11 +54,17 @@ Vec3f castRay(const Ray &ray, int depth)
     }
 
     if (std::isinf(minDist))
-        return BACKGROUND;
-    
+    {
+        if (ray.delta.y <= 0) return BACKGROUND;
 
-    
-    Shape *hit = shapes[index].get();
+        float t = (3 - ray.origin.y) / ray.delta.y;
+        Vec3f pos = ray.getPos(t);
+        if (std::fmod(std::abs(pos.z), 4.0f) > 2 == std::fmod(std::abs(pos.x), 4.0f) > 2) return BACKGROUND;
+        return Vec3f(100);
+    }
+
+    if (depth < MAX_DEPTH && shapes[index].get()->getMat().reflective)
+        return castRay(ray.reflect(intr), depth+1);
 
     bool inShadow = true;
     for (int i = 0; i < lights.size(); ++i)
@@ -73,7 +79,7 @@ Vec3f castRay(const Ray &ray, int depth)
     if (inShadow)
         return ORIG; // Vec3f(0)
     
-    return hit->getMat().color;
+    return shapes[index].get()->getMat().color * (1.0f / lights[0].get()->pos.dist(intr.hit));
 }
 
 void drawFrame(sf::Uint8 *pixels)
@@ -101,12 +107,12 @@ void initShapes()
     shapes.push_back(std::make_unique<Sphere>(
         Sphere(Vec3f(0, 0, 7),
                1,
-               { Vec3f(255, 0, 0) })));
+               { Vec3f(255, 0, 0), false })));
 
     shapes.push_back(std::make_unique<Sphere>(
         Sphere(Vec3f(-1, 0, 6),
                0.3,
-               { Vec3f(0, 100, 50) })));
+               { Vec3f(0, 100, 50), true })));
 
     lights.push_back(std::make_unique<Light>(
         Light(Vec3f(0, 0, 5),
@@ -129,8 +135,27 @@ int main()
     while (win.isOpen())
     {
         while (win.pollEvent(e))
+        {
             if (e.type == sf::Event::Closed)
                 win.close();
+            else if (e.type == sf::Event::KeyPressed)
+            {
+                int code = e.key.code;
+
+                if (code == sf::Keyboard::Escape)
+                    win.close();
+                
+                if (code == sf::Keyboard::W)
+                    cam += Vec3f(0, 0, 1).rotate(pitch, yaw);
+                if (code == sf::Keyboard::S)
+                    cam -= Vec3f(0, 0, 1).rotate(pitch, yaw);
+                
+                if (code == sf::Keyboard::A)
+                    yaw -= 0.1;
+                if (code == sf::Keyboard::D)
+                    yaw += 0.1;
+            }
+        }
         
         drawFrame(pixels);
 
