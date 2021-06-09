@@ -1,12 +1,12 @@
 #include "../include/scene/sphere.hpp"
 #include "../include/scene/light.hpp"
 #include "constants.hpp"
+#include "fps.hpp"
 
 #include <vector>
 #include <iostream>
 #include "SFML/Graphics.hpp"
 
-//
 //
 //
 
@@ -17,7 +17,6 @@ float yaw = 0;
 std::vector<std::unique_ptr<Shape>> shapes;
 std::vector<std::unique_ptr<Light>> lights;
 
-//
 //
 //
 
@@ -134,6 +133,7 @@ void initShapes()
 int main()
 {
     sf::RenderWindow win(sf::VideoMode(XRES, YRES), "");
+    FPSCounter fps;
 
     sf::Event e;
 
@@ -175,6 +175,9 @@ int main()
         
         tex.update(pixels);
         win.draw(texSprite);
+
+        fps.update();
+        fps.render(win);
 
         win.display();
     }
