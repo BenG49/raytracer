@@ -32,4 +32,4 @@ public:
 
 typedef Vec3<float> Vec3f;
 
-const Vec3f ORIG(0, 0, 0);
+const Vec3f ORIG(0);

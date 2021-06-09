@@ -13,7 +13,7 @@ struct Intersection
     Intersection(bool intersected, const Vec3f &hit, const Vec3f &norm)
         : intersected(intersected)
         , hit(hit)
-        , norm(norm) {}
+        , norm(norm.normalize()) {}
     
     bool intersected;
 

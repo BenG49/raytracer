@@ -15,5 +15,5 @@ public:
     Material mat;
 
 private:
-    const float EPSILON = 0.001f;
+    const float EPSILON = 0.01f;
 };

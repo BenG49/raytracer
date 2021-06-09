@@ -1,5 +1,4 @@
 #include "../../include/scene/sphere.hpp"
-#include <iostream>
 
 Sphere::Sphere(const Vec3f &center, float radius, const Material &mat)
     : center(center)
@@ -20,13 +19,13 @@ Intersection Sphere::getIntersection(const Ray &ray) const
     float t1 = tca + thc;
 
     // if entrance is farther than exit
-    if (t0 > t1) t0 = t1;
+    if (t0 > t1) std::swap(t0, t1);
 
     // prevents self intersection
     if (t0 < EPSILON) return Intersection();
 
     Vec3f hit = ray.getPos(t0);
-    return Intersection(true, hit, (hit - center).normalize());
+    return Intersection(true, hit, hit - center);
 }
 
 Material Sphere::getMat() const { return mat; }
