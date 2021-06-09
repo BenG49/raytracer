@@ -14,4 +14,16 @@ const float VIEWPLANE_YSTART = -YVIEWPLANE/2.0f;
 
 const int MAX_DEPTH = 3;
 
-const Vec3f BACKGROUND(255, 255, 255);
+// FLOOR
+
+const float FLOOR_HEIGHT = 1;
+
+const int SQ_SIZE = 4;
+const int SQ_SIZE2 = SQ_SIZE * 2;
+
+const int FLOOR_SHADOW_AREA = 20;
+
+// COLORS
+
+const Vec3f BACKGROUND(255);
+const Vec3f GRAY(100);

@@ -30,6 +30,17 @@ Ray getRay(int px, int py)
     return Ray(cam, delta);
 }
 
+bool inShadow(const Intersection &intersection, const Vec3f &camera, std::vector<std::unique_ptr<Shape>> &shapes)
+{
+    for (int i = 0; i < lights.size(); ++i)
+    {
+        if (!lights[i].get()->inShadow(intersection, cam, shapes))
+            return false;
+    }
+
+    return true;
+}
+
 Vec3f castRay(const Ray &ray, int depth)
 {
     float minDist = INFINITY;
@@ -53,30 +64,31 @@ Vec3f castRay(const Ray &ray, int depth)
         intr = intersect;
     }
 
+    // doesn't hit a shape
     if (std::isinf(minDist))
     {
+        // not facing below horizon
         if (ray.delta.y <= 0) return BACKGROUND;
 
-        float t = (3 - ray.origin.y) / ray.delta.y;
-        Vec3f pos = ray.getPos(t);
-        if (std::fmod(std::abs(pos.z), 4.0f) > 2 == std::fmod(std::abs(pos.x), 4.0f) > 2) return BACKGROUND;
-        return Vec3f(100);
+        float t = (FLOOR_HEIGHT - ray.origin.y) / ray.delta.y;
+        Vec3f hit = ray.getPos(t);
+
+        // if within shadow area and in shadow, return shadow
+        if (std::abs(hit.x) < FLOOR_SHADOW_AREA &&
+            std::abs(hit.z) < FLOOR_SHADOW_AREA &&
+            inShadow(Intersection(true, hit, Vec3f(0, 1, 0)), cam, shapes))
+                return ORIG;
+
+        if (std::fmod(std::abs(hit.z), SQ_SIZE2) > SQ_SIZE ==
+            std::fmod(std::abs(hit.x), SQ_SIZE2) > SQ_SIZE) return BACKGROUND;
+
+        return GRAY;
     }
 
     if (depth < MAX_DEPTH && shapes[index].get()->getMat().reflective)
         return castRay(ray.reflect(intr), depth+1);
 
-    bool inShadow = true;
-    for (int i = 0; i < lights.size(); ++i)
-    {
-        if (!lights[i].get()->inShadow(intr, cam, shapes))
-        {
-            inShadow = false;
-            break;
-        }
-    }
-
-    if (inShadow)
+    if (inShadow(intr, cam, shapes))
         return ORIG; // Vec3f(0)
     
     return shapes[index].get()->getMat().color * (1.0f / lights[0].get()->pos.dist(intr.hit));
@@ -115,7 +127,7 @@ void initShapes()
                { Vec3f(0, 100, 50), true })));
 
     lights.push_back(std::make_unique<Light>(
-        Light(Vec3f(0, 0, 5),
+        Light(Vec3f(0, -2, 7),
               Vec3f(1, 1, 1))));
 }
 
