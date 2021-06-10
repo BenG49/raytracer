@@ -10,13 +10,16 @@ struct Intersection
         , hit(ORIG)
         , norm(ORIG) {}
     
-    Intersection(bool intersected, const Vec3f &hit, const Vec3f &norm)
+    Intersection(bool intersected, const Vec3f &hit, const Vec3f &norm, float t0)
         : intersected(intersected)
         , hit(hit)
-        , norm(norm.normalize()) {}
+        , norm(norm.normalize())
+        , t0(t0) {}
     
     bool intersected;
 
     Vec3f hit;
     Vec3f norm;
+
+    float t0;
 };

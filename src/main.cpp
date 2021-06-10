@@ -76,7 +76,7 @@ Color castRay(const Ray &ray, int depth)
             std::abs(hit.z) > FLOOR_AREA)
                 return BACKGROUND;
 
-        if (inShadow(Intersection(true, hit, Vec3f(0, 1, 0)), cam, shapes))
+        if (inShadow(Intersection(true, hit, Vec3f(0, 1, 0), t), cam, shapes))
             return ORIG;
 
         float hz = std::abs(hit.z);

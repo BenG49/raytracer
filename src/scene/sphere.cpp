@@ -25,7 +25,7 @@ Intersection Sphere::getIntersection(const Ray &ray) const
     if (t0 < EPSILON && t1 < EPSILON) return Intersection();
 
     Vec3f hit = ray.getPos(t0);
-    return Intersection(true, hit, hit - center);
+    return Intersection(true, hit, hit - center, t0);
 }
 
 Material Sphere::getMat() const { return mat; }

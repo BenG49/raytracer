@@ -7,8 +7,12 @@ bool Light::inShadow(const Intersection &intersection, const Vec3f &camera, std:
 
     for (int i = 0; i < shapes.size(); ++i)
     {
-        if (shapes[i].get()->getIntersection(toLight).intersected)
-            return true;
+        Intersection intr = shapes[i].get()->getIntersection(toLight);
+        if (intr.intersected)
+        {
+            if (intr.t0 < intersection.hit.dist(pos))
+                return true;
+        }
     }
 
     return false;

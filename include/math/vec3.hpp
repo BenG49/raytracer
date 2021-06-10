@@ -13,6 +13,7 @@ public:
     Vec3<T> operator+(const Vec3<T> &rhs) const;
     Vec3<T> operator-(const Vec3<T> &rhs) const;
     Vec3<T> operator*(const Vec3<T> &rhs) const;
+    Vec3<T> operator/(const Vec3<T> &rhs) const;
     Vec3<T> operator*(T rhs) const;
     Vec3<T> operator/(T rhs) const;
 
