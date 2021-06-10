@@ -29,6 +29,8 @@ public:
     Vec3<T> rotate(float pitch, float yaw) const;
     Vec3<T> normalize() const;
 
+    Vec3<T> reflect(const Vec3<T> &hitNorm) const;
+
     void print() const;
 
     T x, y, z;

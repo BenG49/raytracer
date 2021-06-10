@@ -10,7 +10,7 @@
 //
 //
 
-Vec3f cam(0, 0, 0);
+Vec3f cam(0, -1, 0);
 float pitch = 0;
 float yaw = 0;
 
@@ -38,15 +38,6 @@ bool inShadow(const Intersection &intersection, const Vec3f &camera, std::vector
     }
 
     return true;
-}
-
-Color phongLighting(const Intersection &intersection, const Color &ambient)
-{
-    Color out = ambient;
-
-    for (int i = 0; i < lights.size(); ++i)
-    {
-    }
 }
 
 Color castRay(const Ray &ray, int depth)
@@ -81,25 +72,38 @@ Color castRay(const Ray &ray, int depth)
         float t = (FLOOR_HEIGHT - ray.origin.y) / ray.delta.y;
         Vec3f hit = ray.getPos(t);
 
-        // if within shadow area and in shadow, return shadow
-        if (std::abs(hit.x) < FLOOR_SHADOW_AREA &&
-            std::abs(hit.z) < FLOOR_SHADOW_AREA &&
-            inShadow(Intersection(true, hit, Vec3f(0, 1, 0)), cam, shapes))
-                return ORIG;
+        if (std::abs(hit.x) > FLOOR_AREA ||
+            std::abs(hit.z) > FLOOR_AREA)
+                return BACKGROUND;
 
-        if (std::fmod(std::abs(hit.z), SQ_SIZE2) > SQ_SIZE ==
-            std::fmod(std::abs(hit.x), SQ_SIZE2) > SQ_SIZE) return BACKGROUND;
+        if (inShadow(Intersection(true, hit, Vec3f(0, 1, 0)), cam, shapes))
+            return ORIG;
+
+        float hz = std::abs(hit.z);
+        float hx = std::abs(hit.x);
+
+        if (hit.x < 0) hx += SQ_SIZE;
+        if (hit.z < 0) hz += SQ_SIZE;
+
+        if (std::fmod(hx, SQ_SIZE2) > SQ_SIZE ==
+            std::fmod(hz, SQ_SIZE2) > SQ_SIZE) return Vec3f(255);
 
         return GRAY;
     }
 
     if (depth < MAX_DEPTH && shapes[index].get()->getMat().reflective)
-        return castRay(ray.reflect(intr), depth+1);
+    {
+        Vec3f newDelta = ray.delta.reflect(intr.norm);
+
+        // return castRay(ray.reflect(intr), depth+1);
+        return castRay(Ray(intr.hit, newDelta), depth+1);
+    }
 
     if (inShadow(intr, cam, shapes))
         return ORIG; // Color(0)
     
-    return shapes[index].get()->getMat().color * (1.0f / lights[0].get()->pos.dist(intr.hit));
+    // return shapes[index].get()->getMat().color * (1.0f / lights[0].get()->pos.dist(intr.hit));
+    return Light::phongLighting(intr, shapes[index].get()->getMat(), cam, lights);
 }
 
 void drawFrame(sf::Uint8 *pixels)
@@ -125,19 +129,25 @@ void drawFrame(sf::Uint8 *pixels)
 void initShapes()
 {
     shapes.push_back(std::make_unique<Sphere>(
-        Sphere(Vec3f(0, 0, 7),
+        Sphere(Vec3f(0, -1, 7),
                1,
-               { Color(255, 0, 0), false })));
+               Material(
+                   Color(255, 0, 0),
+                   0.8f,
+                   0.8f,
+                   0.2f,
+                   0.2f
+               ))));
 
     shapes.push_back(std::make_unique<Sphere>(
-        Sphere(Vec3f(-1, 0, 6),
-               0.3,
-               { Color(0, 100, 50), true })));
+        Sphere(Vec3f(-1, -0.5, 6),
+               0.5,
+               Material())));
 
     lights.push_back(std::make_unique<Light>(
-        Light(Vec3f(0, -2, 6),
-              Color(1, 1, 1),
-              Color(1, 1, 1))));
+        Light(Vec3f(0, 0, 4),
+              0.7f,
+              0.5f)));
 }
 
 int main()

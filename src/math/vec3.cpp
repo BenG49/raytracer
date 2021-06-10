@@ -115,6 +115,13 @@ Vec3<T> Vec3<T>::normalize() const
     return *this;
 }
 
+// NOTE: because of stupid y axis inversion, have to invert y
+template<typename T>
+Vec3<T> Vec3<T>::reflect(const Vec3<T> &hitNorm) const
+{
+    return *this - (hitNorm * 2 * this->dot(hitNorm));
+}
+
 template<typename T>
 void Vec3<T>::print() const
 {

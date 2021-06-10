@@ -3,7 +3,7 @@
 const int XRES = 640;
 const int YRES = 480;
 
-const float XVIEWPLANE = 0.5f;
+const float XVIEWPLANE = 1.0f;
 // keep view plane in same ratio as resolution
 const float YVIEWPLANE = (YRES / (float) XRES) * XVIEWPLANE;
 const float RAYDX = XVIEWPLANE / XRES;
@@ -16,14 +16,19 @@ const int MAX_DEPTH = 3;
 
 // FLOOR
 
-const float FLOOR_HEIGHT = 1;
+const float FLOOR_HEIGHT = 0;
 
-const int SQ_SIZE = 4;
+const int SQ_SIZE = 1;
 const int SQ_SIZE2 = SQ_SIZE * 2;
 
-const int FLOOR_SHADOW_AREA = 20;
+const int FLOOR_AREA = 10;
+
+// LIGHT
+
+const float AMBIENT = 0.2f;
+const int GAMMA = 4;
 
 // COLORS
 
-const Vec3f BACKGROUND(255);
+const Vec3f BACKGROUND(5, 185, 250);
 const Vec3f GRAY(100);

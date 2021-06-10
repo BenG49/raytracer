@@ -9,7 +9,6 @@ struct Ray
         : origin(origin), delta(delta.normalize()) {}
 
     Vec3f getPos(float deltaMult) const;
-    Ray reflect(const Intersection &intr) const;
 
     Vec3f origin;
     Vec3f delta;
