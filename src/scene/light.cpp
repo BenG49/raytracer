@@ -29,10 +29,10 @@ Color Light::phongLighting(const Intersection &intersection, const Material &mat
         float diffuse = mat.diffuse * l.dot(intersection.norm) * cur->diffuse;
 
         // float lambda = 1 - r.dot(v);
-        // float lambda = r.cross(v).dot(r.cross(v)) / 2.0f;
-        // float beta = mat.shininess / GAMMA;
-        // float specular = mat.specular * std::pow(std::max(0.0f, 1-beta*lambda), GAMMA) * cur->specular;
-        float specular = mat.specular * std::pow(r.dot(v), mat.shininess) * cur->specular;
+        float lambda = r.cross(v).dot(r.cross(v)) / 2.0f;
+        float beta = mat.shininess / (float)GAMMA;
+        float specular = mat.specular * std::pow(std::max(0.0f, 1-beta*lambda), GAMMA) * cur->specular;
+        // float specular = mat.specular * std::pow(r.dot(v), mat.shininess) * cur->specular;
 
         illumination += diffuse + specular;
     }

@@ -10,9 +10,9 @@
 //
 //
 
-Vec3f cam(0, -1, 0);
+Vec3f cam(0, 1, -5);
 float pitch = 0;
-float yaw = 0;
+float yaw = M_PI;
 
 std::vector<std::unique_ptr<Shape>> shapes;
 std::vector<std::unique_ptr<Light>> lights;
@@ -22,7 +22,7 @@ std::vector<std::unique_ptr<Light>> lights;
 
 Ray getRay(int px, int py)
 {
-    Vec3f delta = Vec3f(VIEWPLANE_XSTART + RAYDX * px, VIEWPLANE_YSTART + RAYDY * py, 1)
+    Vec3f delta = Vec3f(VIEWPLANE_XSTART + RAYDX * px, VIEWPLANE_YSTART + (YVIEWPLANE - RAYDY * py), 1)
         .rotate(pitch, yaw)
         .normalize();
 
@@ -67,7 +67,7 @@ Color castRay(const Ray &ray, int depth)
     if (std::isinf(minDist))
     {
         // not facing below horizon
-        if (ray.delta.y <= 0) return BACKGROUND;
+        if (ray.delta.y >= 0) return BACKGROUND;
 
         float t = (FLOOR_HEIGHT - ray.origin.y) / ray.delta.y;
         Vec3f hit = ray.getPos(t);
@@ -92,17 +92,11 @@ Color castRay(const Ray &ray, int depth)
     }
 
     if (depth < MAX_DEPTH && shapes[index].get()->getMat().reflective)
-    {
-        Vec3f newDelta = ray.delta.reflect(intr.norm);
-
-        // return castRay(ray.reflect(intr), depth+1);
-        return castRay(Ray(intr.hit, newDelta), depth+1);
-    }
+        return castRay(Ray(intr.hit, ray.delta.reflect(intr.norm)), depth+1);
 
     if (inShadow(intr, cam, shapes))
         return ORIG; // Color(0)
     
-    // return shapes[index].get()->getMat().color * (1.0f / lights[0].get()->pos.dist(intr.hit));
     return Light::phongLighting(intr, shapes[index].get()->getMat(), cam, lights);
 }
 
@@ -129,7 +123,7 @@ void drawFrame(sf::Uint8 *pixels)
 void initShapes()
 {
     shapes.push_back(std::make_unique<Sphere>(
-        Sphere(Vec3f(0, -1, 7),
+        Sphere(Vec3f(0, 1, 7),
                1,
                Material(
                    Color(255, 0, 0),
@@ -140,12 +134,12 @@ void initShapes()
                ))));
 
     shapes.push_back(std::make_unique<Sphere>(
-        Sphere(Vec3f(-1, -0.5, 6),
+        Sphere(Vec3f(-1, 0.5, 6),
                0.5,
                Material())));
 
     lights.push_back(std::make_unique<Light>(
-        Light(Vec3f(0, 0, 4),
+        Light(Vec3f(0, 1, 0),
               0.7f,
               0.5f)));
 }
